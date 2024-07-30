@@ -19,4 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// Come per le rotte web anche per le api a quanto pare esiste il resource controller, lo scrivo adesso per comodità 
+// anche se ho solo il metodo index nel controller
 Route::apiResource('projects', ProjectController::class);
