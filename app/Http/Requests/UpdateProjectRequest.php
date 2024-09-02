@@ -10,10 +10,13 @@ class UpdateProjectRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string',
+            'slug' => 'nullable|string|unique:projects,slug,' . $this->project->id,
+            'status' => 'required|boolean',
+            'category_id' => 'nullable|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png',
             'technologies' => 'nullable|array',
-            'technologies.*' => 'exists:technologies,id'
+            'technologies.*' => 'exists:technologies,id',
         ];
     }
 }

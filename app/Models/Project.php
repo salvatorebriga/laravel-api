@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'name',
         'description',
+        'slug',
+        'status',
         'category_id',
+        'image_path',
     ];
 
     public function category()

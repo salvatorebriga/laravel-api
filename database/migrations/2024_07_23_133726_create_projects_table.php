@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->string('slug')->unique(); // Aggiunto il campo slug
+            $table->boolean('status');
+            $table->string('image_path')->nullable(); // Aggiunto il campo image_path
             $table->timestamps();
         });
     }

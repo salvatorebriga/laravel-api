@@ -2,7 +2,6 @@
 
 @section('content')
   <div class="container">
-
     <div class="header-page py-4 d-flex justify-content-between align-items-center">
       <h1>Projects</h1>
       <div>
@@ -10,7 +9,7 @@
       </div>
     </div>
 
-    <table class="table">
+    <table class="table table-bordered">
       <thead>
         <tr>
           <th scope="col">Id</th>
@@ -18,7 +17,8 @@
           <th scope="col">Description</th>
           <th scope="col">Category</th>
           <th scope="col">Technologies</th>
-          <th scope="col"></th>
+          <th scope="col">Image</th> <!-- Nuova colonna per l'immagine -->
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -34,18 +34,30 @@
               @endforeach
             </td>
             <td>
+              @if ($project->image_path)
+                <div>
+                  <img src="{{ Storage::url($project->image_path) }}" alt="Project Image" class="img-thumbnail"
+                    style="max-width: 100px;">
+                </div>
+              @else
+                <p>No image available</p>
+              @endif
+            </td>
+            <td>
               <div class="d-flex justify-content-end">
-                <a href="{{ route('admin.projects.edit', $project->id) }}" class="btn btn-primary btn-sm mr-1">
-                  <i class="fas fa-pencil"></i>
+                <a href="{{ route('admin.projects.edit', $project->id) }}" class="btn btn-primary btn-sm me-1"
+                  title="Edit">
+                  <i class="fas fa-pencil-alt"></i>
                 </a>
-                <a href="{{ route('admin.projects.show', $project->id) }}" class="btn btn-warning btn-sm mr-1">
+                <a href="{{ route('admin.projects.show', $project->id) }}" class="btn btn-warning btn-sm me-1"
+                  title="View">
                   <i class="fas fa-search"></i>
                 </a>
-                <form action="{{ route('admin.projects.destroy', $project->id) }}" method="POST">
+                <form action="{{ route('admin.projects.destroy', $project->id) }}" method="POST"
+                  onsubmit="return confirm('Are you sure you want to delete this project?');">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-danger btn-sm"
-                    onclick="return confirm('Are you sure you want to delete this project?')">
+                  <button type="submit" class="btn btn-danger btn-sm" title="Delete">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </form>

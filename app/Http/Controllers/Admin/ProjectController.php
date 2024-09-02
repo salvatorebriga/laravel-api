@@ -8,6 +8,8 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Category;
 use App\Models\Technology;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -37,10 +39,19 @@ class ProjectController extends Controller
     {
         $validated = $request->validated();
 
+        // Genera lo slug
+        $slug = Str::slug($validated['name']);
+
+        // Gestisci il caricamento dell'immagine
+        $imagePath = $request->file('image') ? $request->file('image')->store('images', 'public') : null;
+
         $project = Project::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
+            'slug' => $slug,
+            'status' => $validated['status'],
             'category_id' => $validated['category_id'],
+            'image_path' => $imagePath,
         ]);
 
         // Sincronizza le tecnologie selezionate
@@ -77,10 +88,19 @@ class ProjectController extends Controller
     {
         $validated = $request->validated();
 
+        // Genera lo slug solo se il nome è cambiato
+        $slug = Str::slug($validated['name']);
+
+        // Gestisci il caricamento dell'immagine solo se è stata fornita una nuova immagine
+        $imagePath = $request->file('image') ? $request->file('image')->store('images') : $project->image_path;
+
         $project->update([
             'name' => $validated['name'],
             'description' => $validated['description'],
+            'slug' => $slug,
+            'status' => $validated['status'],
             'category_id' => $validated['category_id'],
+            'image_path' => $imagePath,
         ]);
 
         // Sincronizza le tecnologie selezionate
@@ -96,6 +116,11 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        // Elimina l'immagine associata, se presente
+        if ($project->image_path) {
+            Storage::delete($project->image_path);
+        }
+
         $project->delete();
         return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
     }
