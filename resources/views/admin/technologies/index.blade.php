@@ -13,7 +13,6 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">ID</th>
           <th scope="col">Name</th>
           <th scope="col"></th>
         </tr>
@@ -21,7 +20,6 @@
       <tbody>
         @foreach ($technologies as $technology)
           <tr>
-            <td>{{ $technology->id }}</td>
             <td>{{ $technology->name }}</td>
             <td>
               <div class="d-flex justify-content-end">

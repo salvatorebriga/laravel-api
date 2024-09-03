@@ -18,15 +18,13 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">ID</th>
           <th scope="col">Name</th>
-          <th scope="col">Actions</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
         @foreach ($categories as $category)
           <tr>
-            <td class="col-1">{{ $category->id }}</td>
             <td class="col-9">{{ $category->name }}</td>
             <td>
               <div class="d-flex justify-content-end">

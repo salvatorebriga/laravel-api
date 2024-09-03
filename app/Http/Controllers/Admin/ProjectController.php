@@ -65,17 +65,18 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show($slug)
     {
-        $project->load('category', 'technologies');
+        $project = Project::where('slug', $slug)->with('category', 'technologies')->firstOrFail();
         return view('admin.projects.show', compact('project'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Project $project)
+    public function edit($slug)
     {
+        $project = Project::where('slug', $slug)->firstOrFail();
         $categories = Category::all();
         $technologies = Technology::all();
         return view('admin.projects.edit', compact('project', 'categories', 'technologies'));
@@ -84,8 +85,9 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, $slug)
     {
+        $project = Project::where('slug', $slug)->firstOrFail();
         $validated = $request->validated();
 
         // Genera lo slug solo se il nome è cambiato
@@ -114,8 +116,10 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy($slug)
     {
+        $project = Project::where('slug', $slug)->firstOrFail();
+
         // Elimina l'immagine associata, se presente
         if ($project->image_path) {
             Storage::delete($project->image_path);
