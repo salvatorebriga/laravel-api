@@ -39,7 +39,8 @@
           <div class="row mb-3">
             <div class="col-md-12">
               <h5>Image</h5>
-              <img src="{{ Storage::url($project->image_path) }}" alt="Project Image" class="img-fluid rounded"
+              <!-- Utilizza il percorso relativo per l'immagine -->
+              <img src="{{ asset($project->image_path) }}" alt="Project Image" class="img-fluid rounded"
                 style="max-width: 100%;">
             </div>
           </div>

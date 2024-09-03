@@ -64,8 +64,11 @@
             <label for="image" class="form-label">Image</label>
             <input type="file" class="form-control" id="image" name="image">
             @if ($project->image_path)
-              <img src="{{ Storage::url($project->image_path) }}" alt="Project Image" class="img-thumbnail"
-                style="max-width: 100px;">
+              <div class="mt-2">
+                <label class="form-label">Current Image</label><br>
+                <img src="{{ asset($project->image_path) }}" alt="Project Image" class="img-thumbnail"
+                  style="max-width: 150px; height: auto;">
+              </div>
             @endif
           </div>
 

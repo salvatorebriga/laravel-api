@@ -43,8 +43,16 @@ class ProjectController extends Controller
         $slug = Str::slug($validated['name']);
 
         // Gestisci il caricamento dell'immagine
-        $imagePath = $request->file('image') ? $request->file('image')->store('images', 'public') : null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName(); // Genera un nome unico per l'immagine
+            $imagePath = $image->move(public_path('images'), $imageName); // Sposta l'immagine in public/images
+            $imagePath = 'images/' . $imageName; // Salva solo il percorso relativo
+        } else {
+            $imagePath = null;
+        }
 
+        // Crea il progetto con i dati validati e il percorso dell'immagine
         $project = Project::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -94,8 +102,25 @@ class ProjectController extends Controller
         $slug = Str::slug($validated['name']);
 
         // Gestisci il caricamento dell'immagine solo se è stata fornita una nuova immagine
-        $imagePath = $request->file('image') ? $request->file('image')->store('images') : $project->image_path;
+        if ($request->hasFile('image')) {
+            // Elimina l'immagine esistente, se presente
+            if ($project->image_path) {
+                $imagePath = public_path($project->image_path);
+                if (file_exists($imagePath)) {
+                    unlink($imagePath); // Usa unlink per eliminare il file
+                }
+            }
 
+            // Carica la nuova immagine
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName(); // Genera un nome unico per l'immagine
+            $imagePath = $image->move(public_path('images'), $imageName); // Sposta l'immagine in public/images
+            $imagePath = 'images/' . $imageName; // Salva solo il percorso relativo
+        } else {
+            $imagePath = $project->image_path; // Mantieni l'immagine esistente se non viene caricata una nuova
+        }
+
+        // Aggiorna il progetto con i dati validati e il percorso dell'immagine
         $project->update([
             'name' => $validated['name'],
             'description' => $validated['description'],
@@ -122,7 +147,10 @@ class ProjectController extends Controller
 
         // Elimina l'immagine associata, se presente
         if ($project->image_path) {
-            Storage::delete($project->image_path);
+            $imagePath = public_path($project->image_path);
+            if (file_exists($imagePath)) {
+                unlink($imagePath); // Usa unlink per eliminare il file
+            }
         }
 
         $project->delete();
